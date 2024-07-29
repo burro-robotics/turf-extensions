@@ -1,13 +1,14 @@
 {
-  "name": "burro-turf-extensions",
-  "version": "1.0.0",
-  "description": "",
+  "name": "turf-extensions",
+  "version": "0.0.1",
+  "description": "Assorted functions extending the functionality of Turf.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["turf", "geojson", "bezier", "extensions"],
+  "author": "Paul Jones",
   "license": "ISC",
   "dependencies": {
     "@turf/turf": "^7.0.0",
