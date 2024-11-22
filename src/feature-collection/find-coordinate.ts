@@ -1,8 +1,8 @@
-import {isLineStringFeature} from '@/feature/is-line-string-feature';
-import {isPointFeature} from '@/feature/is-point-feature';
 import type {Units} from '@turf/turf';
 import {distance, point} from '@turf/turf';
 import type {FeatureCollection, Position} from 'geojson';
+import {isLineStringFeature} from '../feature/is-line-string-feature';
+import {isPointFeature} from '../feature/is-point-feature';
 
 export const findCoordinate = (params: {
   inFeatureCollection: FeatureCollection;

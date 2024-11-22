@@ -1,5 +1,5 @@
-import {cleanFeatureCollection} from '@/feature-collection/clean-feature-collection';
 import {FeatureCollection} from 'geojson';
+import {cleanFeatureCollection} from '../src/feature-collection/clean-feature-collection';
 
 describe('removeAdjacentIdenticalPoints', () => {
   it('should remove adjacent identical points', () => {

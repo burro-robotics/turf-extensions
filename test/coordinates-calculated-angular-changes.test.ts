@@ -1,5 +1,5 @@
-import {coordinatesCalculatedAngularChanges} from '@/coordinates/coordinates-calculated-angular-changes';
 import type {Position} from 'geojson';
+import {coordinatesCalculatedAngularChanges} from '../src/coordinates/coordinates-calculated-angular-changes';
 
 describe('coordinatesCalculatedAngles', () => {
   it('should handle a straight line along 0', () => {

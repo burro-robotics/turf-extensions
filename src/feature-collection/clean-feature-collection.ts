@@ -1,6 +1,6 @@
-import {isLineStringFeature} from '@/feature/is-line-string-feature';
 import {cleanCoords, clone} from '@turf/turf';
 import type {FeatureCollection} from 'geojson';
+import {isLineStringFeature} from '../feature/is-line-string-feature';
 
 export function cleanFeatureCollection({
   featureCollection: inputFeatureCollection,

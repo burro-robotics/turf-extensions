@@ -1,6 +1,6 @@
-import {lineSmoothingLine} from '@/line/line-smoothing-line';
 import {lineString} from '@turf/turf';
 import type {Position} from 'geojson';
+import {lineSmoothingLine} from '../src/line/line-smoothing-line';
 
 describe('getNewLineSmoothingLine', () => {
   it('should remove adjacent identical points', () => {

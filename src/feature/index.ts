@@ -1,3 +1,3 @@
-export * from '@/feature/is-line-string-feature';
-export * from '@/feature/is-point-feature';
-export * from '@/feature/is-polygon-feature';
+export * from './is-line-string-feature';
+export * from './is-point-feature';
+export * from './is-polygon-feature';

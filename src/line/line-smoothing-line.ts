@@ -1,8 +1,8 @@
-import {coordinatesCalculatedRadii} from '@/coordinates/coordinate-calculated-radii';
-import {coordinatesSubdividing} from '@/coordinates/coordinates-subdividing';
-import {lineBezierSmoothing} from '@/line/line-bezier-smoothing';
 import {distance, Units} from '@turf/turf';
 import type {Position} from 'geojson';
+import {coordinatesCalculatedRadii} from '../coordinates/coordinate-calculated-radii';
+import {coordinatesSubdividing} from '../coordinates/coordinates-subdividing';
+import {lineBezierSmoothing} from '../line/line-bezier-smoothing';
 import {linesSplittingLineAtCoordinate} from './line-splitting-line-at-coordinate';
 
 export function lineSmoothingLine(params: {
