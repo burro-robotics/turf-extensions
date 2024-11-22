@@ -3,10 +3,10 @@ import {distance, point} from '@turf/turf';
 import type {FeatureCollection, Position} from 'geojson';
 import {isPointFeature} from '../feature/is-point-feature';
 
-export const findPoint = (params: {
+export const closestPoint = (params: {
   inFeatureCollection: FeatureCollection;
   closestToCoordinate: Position;
-  withinDistance: number;
+  withinDistance?: number;
   units?: Units;
 }): Position | null => {
   const {closestToCoordinate, inFeatureCollection, withinDistance, units} =
@@ -21,13 +21,16 @@ export const findPoint = (params: {
     if (isPointFeature(feature)) {
       const aPoint = point(feature.geometry.coordinates);
       const distanceToPoint = distance(thePoint, aPoint, {units});
+      const isCloser = distanceToPoint < closestDistance;
 
-      if (
-        distanceToPoint <= withinDistance &&
-        distanceToPoint < closestDistance
-      ) {
-        closestCoordinate = feature.geometry.coordinates;
-        closestDistance = distanceToPoint;
+      if (isCloser) {
+        if (withinDistance === undefined) {
+          closestCoordinate = feature.geometry.coordinates;
+          closestDistance = distanceToPoint;
+        } else if (distanceToPoint <= withinDistance) {
+          closestCoordinate = feature.geometry.coordinates;
+          closestDistance = distanceToPoint;
+        }
       }
     }
   }

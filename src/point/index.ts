@@ -1,1 +1,1 @@
-export * from './find-point';
+export * from './closest-point';
