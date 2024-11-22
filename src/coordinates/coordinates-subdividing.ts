@@ -1,5 +1,5 @@
-import { Units, along, length, lineString } from "@turf/turf";
-import type { Position } from "geojson";
+import {Units, along, length, lineString} from '@turf/turf';
+import type {Position} from 'geojson';
 
 export function coordinatesSubdividing(params: {
   coordinates: Position[];
@@ -8,7 +8,7 @@ export function coordinatesSubdividing(params: {
     units?: Units;
   };
 }): Position[] {
-  const { coordinates, byMaximumDistance, withOptions } = params;
+  const {coordinates, byMaximumDistance, withOptions} = params;
   if (coordinates.length < 2) {
     return coordinates;
   }
@@ -18,8 +18,8 @@ export function coordinatesSubdividing(params: {
 
   const subdividedPath: Position[] = [];
   for (let i = 0; i <= divisionsCount; i++) {
-    let segmentLength = (i / divisionsCount) * lineLength;
-    let newPoint = along(line, segmentLength, withOptions);
+    const segmentLength = (i / divisionsCount) * lineLength;
+    const newPoint = along(line, segmentLength, withOptions);
     subdividedPath.push(newPoint.geometry.coordinates);
   }
 

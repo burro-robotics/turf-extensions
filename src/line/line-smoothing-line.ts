@@ -1,9 +1,9 @@
-import { distance, Units } from "@turf/turf";
-import type { Position } from "geojson";
-import { coordinatesCalculatedRadii } from "../coordinates/coordinatesCalculatedRadii";
-import { coordinatesSubdividing } from "../coordinates/coordinatesSubdividing";
-import { lineBezierSmoothing } from "./lineBezierSmoothing";
-import { linesSplittingLineAtCoordinate } from "./linesSplittingLineAtCoordinate";
+import {coordinatesCalculatedRadii} from '@/coordinates/coordinate-calculated-radii';
+import {coordinatesSubdividing} from '@/coordinates/coordinates-subdividing';
+import {lineBezierSmoothing} from '@/line/line-bezier-smoothing';
+import {distance, Units} from '@turf/turf';
+import type {Position} from 'geojson';
+import {linesSplittingLineAtCoordinate} from './line-splitting-line-at-coordinate';
 
 export function lineSmoothingLine(params: {
   coordinates: Position[];
@@ -13,7 +13,7 @@ export function lineSmoothingLine(params: {
     units?: Units;
   };
 }): Position[] {
-  const { coordinates, stanceDistance, withOptions, minimumRadius } = params;
+  const {coordinates, stanceDistance, withOptions, minimumRadius} = params;
 
   const subdividedCoordinates = coordinatesSubdividing({
     coordinates,
@@ -27,7 +27,7 @@ export function lineSmoothingLine(params: {
   });
 
   const indexOfFirstInsufficientRadius = radiiOfSubdividedPath.findIndex(
-    (r) => r < minimumRadius
+    r => r < minimumRadius,
   );
 
   if (indexOfFirstInsufficientRadius === -1) {
@@ -45,7 +45,7 @@ export function lineSmoothingLine(params: {
       distance(
         subdividedCoordinates[indexBehind],
         insufficientRadiusCoordinate,
-        withOptions
+        withOptions,
       ) >
       minimumRadius / 2.0;
 
@@ -75,7 +75,7 @@ export function lineSmoothingLine(params: {
       distance(
         subdividedCoordinates[indexAhead],
         insufficientRadiusCoordinate,
-        withOptions
+        withOptions,
       ) >
       minimumRadius / 2.0;
 

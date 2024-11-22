@@ -1,22 +1,21 @@
-import { describe, it } from "@jest/globals";
-import { lineString } from "@turf/turf";
-import type { Position } from "geojson";
-import { lineSmoothingLine } from "./lineSmoothingLine";
+import {lineSmoothingLine} from '@/line/line-smoothing-line';
+import {lineString} from '@turf/turf';
+import type {Position} from 'geojson';
 
-describe("getNewLineSmoothingLine", () => {
-  it("should remove adjacent identical points", () => {
+describe('getNewLineSmoothingLine', () => {
+  it('should remove adjacent identical points', () => {
     const destinationMap = {
-      type: "FeatureCollection",
+      type: 'FeatureCollection',
       properties: {
         folders: [],
-        name: "test",
+        name: 'test',
       },
       features: [
         {
-          id: "1",
-          type: "Feature",
+          id: '1',
+          type: 'Feature',
           geometry: {
-            type: "LineString",
+            type: 'LineString',
             coordinates: [
               [-97.00232467746453, 30.18160930947485],
               [-97.00227116317897, 30.18192541682498],
@@ -28,7 +27,7 @@ describe("getNewLineSmoothingLine", () => {
             ],
           },
           properties: {
-            direction: "one_way",
+            direction: 'one_way',
             speed_limit: 0,
           },
         },
@@ -38,18 +37,18 @@ describe("getNewLineSmoothingLine", () => {
     const coordinates = destinationMap.features![0].geometry
       .coordinates as Position[];
 
-    let smoothedLine = coordinates;
+    const smoothedLine = coordinates;
 
     const stanceDistance = 1.0;
     const minimumRadius = 1.5;
 
-    let smoothedLineString = lineString(
+    const smoothedLineString = lineString(
       lineSmoothingLine({
         coordinates: smoothedLine,
         stanceDistance,
         minimumRadius,
-        withOptions: { units: "meters" },
-      })
+        withOptions: {units: 'meters'},
+      }),
     );
 
     expect(smoothedLineString).toBeDefined();

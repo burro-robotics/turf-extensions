@@ -1,6 +1,6 @@
-import type { Position } from "geojson";
+import type {Position} from 'geojson';
 
-import { coordinatesCalculatedAngularChanges } from "./coordinatesCalculatedAngularChanges";
+import {coordinatesCalculatedAngularChanges} from './coordinates-calculated-angular-changes';
 
 export function filterCoordinatesWithMaximumAngularChange({
   coordinates,
@@ -14,9 +14,9 @@ export function filterCoordinatesWithMaximumAngularChange({
   }
 
   if (maximumAngle < 0) {
-    throw new Error("Minimum radius must be non-negative.");
+    throw new Error('Minimum radius must be non-negative.');
   }
 
-  const angles = coordinatesCalculatedAngularChanges({ coordinates });
+  const angles = coordinatesCalculatedAngularChanges({coordinates});
   return coordinates.filter((_, index) => angles[index] > maximumAngle);
 }

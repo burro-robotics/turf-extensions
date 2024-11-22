@@ -1,7 +1,7 @@
-import type { Units } from "@turf/turf";
-import { distance, point } from "@turf/turf";
-import type { Feature, FeatureCollection, LineString, Position } from "geojson";
-import { isLineStringFeature } from "../feature/isLineStringFeature";
+import {isLineStringFeature} from '@/feature/is-line-string-feature';
+import type {Units} from '@turf/turf';
+import {distance, point} from '@turf/turf';
+import type {Feature, FeatureCollection, LineString, Position} from 'geojson';
 
 export const findLineString = (params: {
   inFeatureCollection: FeatureCollection;
@@ -11,10 +11,10 @@ export const findLineString = (params: {
   lineString: Feature<LineString> | null;
   coordinates: Position | null;
 } => {
-  const { closestToCoordinates, inFeatureCollection, withinMeters } = params;
+  const {closestToCoordinates, inFeatureCollection, withinMeters} = params;
 
   const lineStringFeatures = (inFeatureCollection.features?.filter(
-    isLineStringFeature
+    isLineStringFeature,
   ) ?? []) as Feature<LineString>[];
 
   const thePoint = point([closestToCoordinates[0], closestToCoordinates[1]]);
@@ -27,8 +27,8 @@ export const findLineString = (params: {
     for (const coordinate of lineStringFeature.geometry.coordinates) {
       const aPoint = point(coordinate);
       const distanceToPoint = distance(thePoint, aPoint, {
-        units: "meters",
-      } as { units: Units });
+        units: 'meters',
+      } as {units: Units});
 
       if (
         distanceToPoint <= withinMeters &&
@@ -41,5 +41,5 @@ export const findLineString = (params: {
     }
   }
 
-  return { lineString, coordinates };
+  return {lineString, coordinates};
 };

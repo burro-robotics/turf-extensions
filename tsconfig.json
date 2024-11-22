@@ -1,31 +1,17 @@
 {
-    "compilerOptions": {
-      "baseUrl": "./",
-      "declaration": true,
-      "emitDecoratorMetadata": true,
-      "esModuleInterop": true,
-      "experimentalDecorators": true,
-      "incremental": true,
-      "isolatedModules": true,
-      "module": "esnext",
-      "moduleResolution": "node",
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitReturns": true,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "removeComments": true,
-      "sourceMap": true,
-      "strict": true,
-      "target": "es6",
-      "typeRoots": ["./node_modules/@types", "./types"],
-      "paths": {
-        "@turf/*": ["./node_modules/@turf/*"]
-      },
-    },
-    "exclude": [
-      "src/**/*.test.ts",
-      "dist"
-    ]
-  }
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+ 
+}

@@ -1,16 +1,15 @@
-import { describe, it } from "@jest/globals";
-import type { Position } from "geojson";
-import { filterCoordinatesWithMaximumAngularChange } from "./filterCoordinatesWithMaximumAngularChange";
+import {filterCoordinatesWithMaximumAngularChange} from '@/coordinates/filter-coordinates-with-maximum-angular-change';
+import type {Position} from 'geojson';
 
-describe("getNewLineSmoothingLine", () => {
-  it("should remove adjacent identical points", () => {
+describe('getNewLineSmoothingLine', () => {
+  it('should remove adjacent identical points', () => {
     const destinationMap = {
-      type: "FeatureCollection",
+      type: 'FeatureCollection',
       features: [
         {
-          type: "Feature",
+          type: 'Feature',
           geometry: {
-            type: "LineString",
+            type: 'LineString',
             coordinates: [
               // these coordinates form a big circle
               [-102.57328836234483, 38.183458461664486],
@@ -111,16 +110,16 @@ describe("getNewLineSmoothingLine", () => {
             ],
           },
           properties: {
-            direction: "two_way",
+            direction: 'two_way',
             speed_limit: 0,
           },
-          id: "ec260802-bf85-4697-9161-44ca24eff4af",
+          id: 'ec260802-bf85-4697-9161-44ca24eff4af',
         },
         {
-          id: "28937",
-          type: "Feature",
+          id: '28937',
+          type: 'Feature',
           properties: {
-            direction: "two_way",
+            direction: 'two_way',
             speed_limit: 0,
           },
           geometry: {
@@ -130,14 +129,14 @@ describe("getNewLineSmoothingLine", () => {
               [-102.57261666744479, 38.183646369568805],
               [-102.57259884627912, 38.18357888854252],
             ],
-            type: "LineString",
+            type: 'LineString',
           },
         },
       ],
-      id: "6228b99c-7382-410c-90f6-a986dc5a946b",
+      id: '6228b99c-7382-410c-90f6-a986dc5a946b',
       properties: {
         folders: [],
-        name: "test",
+        name: 'test',
       },
     };
 

@@ -1,11 +1,11 @@
-import { lineString, nearestPointOnLine, point } from "@turf/turf";
-import type { Position } from "geojson";
+import {lineString, nearestPointOnLine, point} from '@turf/turf';
+import type {Position} from 'geojson';
 
 export function linesSplittingLineAtCoordinate(params: {
   coordinates: Position[];
   coordinate: Position;
 }): [Position[], Position[]] | null {
-  const { coordinates, coordinate: newPointCoordinates } = params;
+  const {coordinates, coordinate: newPointCoordinates} = params;
 
   const line = lineString(coordinates);
   const newPoint = point(newPointCoordinates);

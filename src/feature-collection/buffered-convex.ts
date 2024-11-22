@@ -1,12 +1,12 @@
-import type { Units } from "@turf/turf";
-import { buffer, convex } from "@turf/turf";
-import type { FeatureCollection, Polygon } from "geojson";
+import type {Units} from '@turf/turf';
+import {buffer, convex} from '@turf/turf';
+import type {FeatureCollection, Polygon} from 'geojson';
 
 export const bufferedConvex = (params: {
   featureCollection: FeatureCollection;
   bufferRadiusInMeters: number;
 }): Polygon | undefined => {
-  const { featureCollection, bufferRadiusInMeters } = params;
+  const {featureCollection, bufferRadiusInMeters} = params;
 
   const convexed = convex(featureCollection);
 
@@ -15,8 +15,8 @@ export const bufferedConvex = (params: {
   }
 
   const buffered = buffer(convexed, bufferRadiusInMeters, {
-    units: "meters",
-  } as { units: Units });
+    units: 'meters',
+  } as {units: Units});
 
   return buffered?.geometry as Polygon;
 };

@@ -1,5 +1,5 @@
-import { Units, distance } from "@turf/turf";
-import type { Position } from "geojson";
+import {Units, distance} from '@turf/turf';
+import type {Position} from 'geojson';
 
 export function coordinatesCalculatedRadii(params: {
   coordinates: Position[];
@@ -9,10 +9,10 @@ export function coordinatesCalculatedRadii(params: {
       }
     | undefined;
 }): number[] {
-  const { coordinates, withOptions } = params;
+  const {coordinates, withOptions} = params;
   if (coordinates.length < 3) {
     throw new Error(
-      "At least three coordinates are required to calculate curvature."
+      'At least three coordinates are required to calculate curvature.',
     );
   }
 
