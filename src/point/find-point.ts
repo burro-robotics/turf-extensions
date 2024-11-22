@@ -1,9 +1,9 @@
 import type {Units} from '@turf/turf';
 import {distance, point} from '@turf/turf';
 import type {FeatureCollection, Position} from 'geojson';
-import {isLineStringFeature} from '../feature/is-line-string-feature';
+import {isPointFeature} from '../feature/is-point-feature';
 
-export const findCoordinate = (params: {
+export const findPoint = (params: {
   inFeatureCollection: FeatureCollection;
   closestToCoordinate: Position;
   withinDistance: number;
@@ -18,18 +18,16 @@ export const findCoordinate = (params: {
   let closestDistance = Number.MAX_SAFE_INTEGER;
 
   for (const feature of inFeatureCollection.features) {
-    if (isLineStringFeature(feature)) {
-      for (const coordinate of feature.geometry.coordinates) {
-        const aPoint = point(coordinate);
-        const distanceToPoint = distance(thePoint, aPoint, {units});
+    if (isPointFeature(feature)) {
+      const aPoint = point(feature.geometry.coordinates);
+      const distanceToPoint = distance(thePoint, aPoint, {units});
 
-        if (
-          distanceToPoint <= withinDistance &&
-          distanceToPoint < closestDistance
-        ) {
-          closestCoordinate = coordinate;
-          closestDistance = distanceToPoint;
-        }
+      if (
+        distanceToPoint <= withinDistance &&
+        distanceToPoint < closestDistance
+      ) {
+        closestCoordinate = feature.geometry.coordinates;
+        closestDistance = distanceToPoint;
       }
     }
   }
