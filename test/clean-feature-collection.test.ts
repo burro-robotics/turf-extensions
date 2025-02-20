@@ -94,4 +94,77 @@ describe('removeAdjacentIdenticalPoints', () => {
 
     expect(destinationMap.features).toHaveLength(2);
   });
+
+  it('should remove LineStrings with all identical points', () => {
+    const destinationMap: FeatureCollection = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          id: '1',
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [0, 0],
+              [0, 0],
+            ],
+          },
+          properties: {
+            direction: 'one_way',
+            speed_limit: 0,
+          },
+        },
+        {
+          id: '1',
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [0, 0],
+              [0, 0],
+              [0, 0],
+              [0, 0],
+            ],
+          },
+          properties: {
+            direction: 'one_way',
+            speed_limit: 0,
+          },
+        },
+        {
+          id: '2',
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [[0, 0]],
+          },
+          properties: {
+            direction: 'one_way',
+            speed_limit: 0,
+          },
+        },
+        {
+          id: '3',
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [0, 0],
+          },
+          properties: {
+            type: 'destination',
+            name: 'askdjhkj',
+          },
+        },
+      ],
+    };
+
+    expect(destinationMap.features).toHaveLength(4);
+
+    cleanFeatureCollection({
+      featureCollection: destinationMap as FeatureCollection,
+      options: {mutate: true},
+    });
+
+    expect(destinationMap.features).toHaveLength(1);
+  });
 });

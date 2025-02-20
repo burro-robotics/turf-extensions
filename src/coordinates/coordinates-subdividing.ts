@@ -1,14 +1,17 @@
 import {Units, along, length, lineString} from '@turf/turf';
 import type {Position} from 'geojson';
 
-export function coordinatesSubdividing(params: {
+export function coordinatesSubdividing({
+  coordinates,
+  byMaximumDistance,
+  withOptions,
+}: {
   coordinates: Position[];
   byMaximumDistance: number;
   withOptions: {
     units?: Units;
   };
 }): Position[] {
-  const {coordinates, byMaximumDistance, withOptions} = params;
   if (coordinates.length < 2) {
     return coordinates;
   }

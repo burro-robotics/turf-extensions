@@ -1,10 +1,10 @@
 import type {Position} from 'geojson';
 
-export function coordinatesCalculatedAngularChanges(params: {
+export function coordinatesCalculatedAngularChanges({
+  coordinates,
+}: {
   coordinates: Position[];
 }): number[] {
-  const {coordinates} = params;
-
   if (coordinates.length < 3) {
     return [0, 0];
   }

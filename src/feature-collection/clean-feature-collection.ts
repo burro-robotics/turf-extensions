@@ -1,5 +1,6 @@
 import {cleanCoords, clone} from '@turf/turf';
 import type {FeatureCollection} from 'geojson';
+import {coordinatesEveryEqual} from '../coordinates/coordinates-all-equal';
 import {isLineStringFeature} from '../feature/is-line-string-feature';
 
 export function cleanFeatureCollection({
@@ -16,9 +17,12 @@ export function cleanFeatureCollection({
     ? inputFeatureCollection
     : clone(inputFeatureCollection);
 
-  featureCollection.features = featureCollection.features?.filter(feature => {
-    if (isLineStringFeature(feature)) {
-      return feature.geometry.coordinates.length > 1;
+  featureCollection.features = featureCollection.features?.filter(value => {
+    if (isLineStringFeature(value)) {
+      return (
+        value.geometry.coordinates.length > 1 &&
+        !coordinatesEveryEqual({coordinates: value.geometry.coordinates})
+      );
     }
 
     return true;

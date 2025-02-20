@@ -1,8 +1,8 @@
 import type {Units} from '@turf/turf';
 import {distance, point} from '@turf/turf';
 import type {FeatureCollection, Position} from 'geojson';
-import {isPointFeature} from 'src/feature/is-point-feature';
 import {isLineStringFeature} from '../feature/is-line-string-feature';
+import {isPointFeature} from '../feature/is-point-feature';
 
 export function findCoordinate({
   closestToCoordinate,

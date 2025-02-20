@@ -3,14 +3,14 @@ import {distance, point} from '@turf/turf';
 import type {Feature, FeatureCollection, LineString, Position} from 'geojson';
 import {isLineStringFeature} from '../feature/is-line-string-feature';
 
-export const findLineString = (params: {
+export function findLineString(params: {
   inFeatureCollection: FeatureCollection;
   closestToCoordinates: Position;
   withinMeters: number;
 }): {
   lineString: Feature<LineString> | null;
   coordinates: Position | null;
-} => {
+} {
   const {closestToCoordinates, inFeatureCollection, withinMeters} = params;
 
   const lineStringFeatures = (inFeatureCollection.features?.filter(
@@ -42,4 +42,4 @@ export const findLineString = (params: {
   }
 
   return {lineString, coordinates};
-};
+}
