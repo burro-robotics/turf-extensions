@@ -7,8 +7,13 @@ import {
 import {Feature, FeatureCollection, LineString, Point} from 'geojson';
 import {coordinatesEqual} from '../coordinates/cordinates-equal';
 
+type findCollisionsOptions = {
+  includeSharedEndpoints: boolean;
+};
+
 export function findCollisions(
   lineStrings: Feature<LineString>[],
+  options?: findCollisionsOptions,
 ): FeatureCollection<Point>[] {
   const collisionPoints: FeatureCollection<Point>[] = [];
 
@@ -57,6 +62,10 @@ export function findCollisions(
         },
       );
 
+      if (options?.includeSharedEndpoints && isSharedEndpoint) {
+        collisionPoints.push(intersectionPoints);
+        continue;
+      }
       if (!isSharedEndpoint) {
         collisionPoints.push(intersectionPoints);
       }
