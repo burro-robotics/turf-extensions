@@ -2,7 +2,7 @@ import {findCollisions} from '../src/feature-collection/find-collisions';
 
 import {lineString} from '@turf/turf';
 
-describe('findPotentialCollisions', () => {
+describe('findCollisions without defining a includeSharedEndpoint option', () => {
   it('should detect interior crossings as collisions', () => {
     const lineStrings = [
       lineString(
@@ -312,5 +312,107 @@ describe('findPotentialCollisions', () => {
     const collisions = findCollisions(lineStrings);
 
     expect(collisions).toHaveLength(3);
+  });
+});
+
+describe('findCollisions with includeSharedEndpoints: true', () => {
+  test('should include collisions when lines share start points', () => {
+    const line1 = lineString([
+      [0, 0],
+      [1, 1],
+    ]);
+    const line2 = lineString([
+      [0, 0],
+      [1, -1],
+    ]);
+
+    const result = findCollisions([line1, line2], {
+      includeSharedEndpoints: true,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].features).toHaveLength(1);
+    expect(result[0].features[0].geometry.coordinates).toEqual([0, 0]);
+  });
+
+  test('should include collisions when lines share end points', () => {
+    const line1 = lineString([
+      [0, 0],
+      [2, 2],
+    ]);
+    const line2 = lineString([
+      [1, 0],
+      [2, 2],
+    ]);
+
+    const result = findCollisions([line1, line2], {
+      includeSharedEndpoints: true,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].features).toHaveLength(1);
+    expect(result[0].features[0].geometry.coordinates).toEqual([2, 2]);
+  });
+
+  test('should handle T-junction where line endpoint touches middle of another line', () => {
+    const line1 = lineString([
+      [0, 0],
+      [2, 0],
+    ]);
+    const line2 = lineString([
+      [1, 0],
+      [1, 1],
+    ]);
+
+    const result = findCollisions([line1, line2], {
+      includeSharedEndpoints: true,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0].features[0].geometry.coordinates).toEqual([1, 0]);
+  });
+
+  test('should not include shared endpoints when includeSharedEndpoints is false', () => {
+    const line1 = lineString([
+      [0, 0],
+      [1, 1],
+    ]);
+    const line2 = lineString([
+      [0, 0],
+      [1, -1],
+    ]);
+
+    const result = findCollisions([line1, line2], {
+      includeSharedEndpoints: false,
+    });
+
+    expect(result).toHaveLength(0);
+  });
+
+  test('should handle complex polygon-like structure with shared endpoints', () => {
+    const line1 = lineString([
+      [0, 0],
+      [1, 0],
+    ]);
+    const line2 = lineString([
+      [1, 0],
+      [0.5, 1],
+    ]);
+    const line3 = lineString([
+      [0.5, 1],
+      [0, 0],
+    ]);
+
+    const result = findCollisions([line1, line2, line3], {
+      includeSharedEndpoints: true,
+    });
+
+    expect(result).toHaveLength(3);
+    const intersectionCoords = result.map(
+      fc => fc.features[0].geometry.coordinates,
+    );
+    expect(intersectionCoords).toContainEqual([1, 0]);
+    expect(intersectionCoords).toContainEqual([0.5, 1]);
+    expect(intersectionCoords).toContainEqual([0, 0]);
   });
 });
