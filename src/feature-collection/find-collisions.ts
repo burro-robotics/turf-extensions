@@ -1,4 +1,9 @@
-import * as turf from '@turf/turf';
+import {
+  booleanIntersects,
+  lineIntersect,
+  booleanCrosses,
+  getCoords,
+} from '@turf/turf';
 import {Feature, FeatureCollection, LineString, Point} from 'geojson';
 import {coordinatesEqual} from '../coordinates/cordinates-equal';
 
@@ -7,16 +12,15 @@ export function findCollisions(
 ): FeatureCollection<Point>[] {
   const collisionPoints: FeatureCollection<Point>[] = [];
 
-  for (let i = 0; i < lineStrings.length; i++) {
-    for (let j = i + 1; j < lineStrings.length; j++) {
-      const firstLineString = lineStrings[i];
-      const secondLineString = lineStrings[j];
+  for (const [i, firstLineString] of lineStrings.entries()) {
+    for (const [j, secondLineString] of lineStrings.entries()) {
+      if (j <= i) continue;
 
-      if (!turf.booleanIntersects(firstLineString, secondLineString)) {
+      if (!booleanIntersects(firstLineString, secondLineString)) {
         continue;
       }
 
-      const intersectionPoints: FeatureCollection<Point> = turf.lineIntersect(
+      const intersectionPoints: FeatureCollection<Point> = lineIntersect(
         firstLineString,
         secondLineString,
       );
@@ -25,13 +29,13 @@ export function findCollisions(
         continue;
       }
 
-      if (turf.booleanCrosses(firstLineString, secondLineString)) {
+      if (booleanCrosses(firstLineString, secondLineString)) {
         collisionPoints.push(intersectionPoints);
         continue;
       }
 
-      const firstLineCoords = turf.getCoords(firstLineString);
-      const secondLineCoords = turf.getCoords(secondLineString);
+      const firstLineCoords = getCoords(firstLineString);
+      const secondLineCoords = getCoords(secondLineString);
 
       const firstLineStart = firstLineCoords[0];
       const firstLineEnd = firstLineCoords[firstLineCoords.length - 1];
@@ -40,7 +44,7 @@ export function findCollisions(
 
       const isSharedEndpoint = intersectionPoints.features.some(
         intersection => {
-          const coord = turf.getCoords(intersection);
+          const coord = getCoords(intersection);
 
           const touchesLine1Endpoint =
             coordinatesEqual(coord, firstLineStart) ||

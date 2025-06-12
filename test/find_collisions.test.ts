@@ -1,18 +1,18 @@
 import {findCollisions} from '../src/feature-collection/find-collisions';
 
-import * as turf from '@turf/turf';
+import {lineString} from '@turf/turf';
 
 describe('findPotentialCollisions', () => {
   it('should detect interior crossings as collisions', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [2, 2],
         ],
         {id: 'line1'},
       ),
-      turf.lineString(
+      lineString(
         [
           [0, 2],
           [2, 0],
@@ -29,14 +29,14 @@ describe('findPotentialCollisions', () => {
 
   it('should detect T-junctions as collisions', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 1],
           [3, 1],
         ],
         {id: 'main_road'},
       ),
-      turf.lineString(
+      lineString(
         [
           [1.5, 0],
           [1.5, 1],
@@ -54,14 +54,14 @@ describe('findPotentialCollisions', () => {
 
   it('should NOT detect shared endpoints as collisions', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [1, 1],
         ],
         {id: 'segment1'},
       ),
-      turf.lineString(
+      lineString(
         [
           [1, 1],
           [2, 0],
@@ -77,28 +77,28 @@ describe('findPotentialCollisions', () => {
 
   it('should NOT detect multiple shared endpoints as collisions', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [1, 0],
         ],
         {id: 'bottom'},
       ),
-      turf.lineString(
+      lineString(
         [
           [1, 0],
           [1, 1],
         ],
         {id: 'right'},
       ),
-      turf.lineString(
+      lineString(
         [
           [1, 1],
           [0, 1],
         ],
         {id: 'top'},
       ),
-      turf.lineString(
+      lineString(
         [
           [0, 1],
           [0, 0],
@@ -114,21 +114,21 @@ describe('findPotentialCollisions', () => {
 
   it('should detect only actual collisions in mixed scenarios', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [2, 0],
         ],
         {id: 'horizontal'},
       ),
-      turf.lineString(
+      lineString(
         [
           [2, 0],
           [2, 2],
         ],
         {id: 'vertical'},
       ),
-      turf.lineString(
+      lineString(
         [
           [0.5, -1],
           [0.5, 1],
@@ -146,21 +146,21 @@ describe('findPotentialCollisions', () => {
 
   it('should return empty array when no intersections exist', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [1, 0],
         ],
         {id: 'line1'},
       ),
-      turf.lineString(
+      lineString(
         [
           [2, 0],
           [3, 0],
         ],
         {id: 'line2'},
       ),
-      turf.lineString(
+      lineString(
         [
           [0, 2],
           [1, 2],
@@ -176,21 +176,21 @@ describe('findPotentialCollisions', () => {
 
   it('should detect multiple collision points', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [1, 0],
           [1, 3],
         ],
         {id: 'vertical'},
       ),
-      turf.lineString(
+      lineString(
         [
           [0, 1],
           [3, 1],
         ],
         {id: 'horizontal1'},
       ),
-      turf.lineString(
+      lineString(
         [
           [0, 2],
           [3, 2],
@@ -213,14 +213,14 @@ describe('findPotentialCollisions', () => {
 
   it('should detect when different endpoints meet as non-collision', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [1, 0],
         ],
         {id: 'line1'},
       ),
-      turf.lineString(
+      lineString(
         [
           [2, 1],
           [1, 0],
@@ -236,7 +236,7 @@ describe('findPotentialCollisions', () => {
 
   it('should handle single line without collisions', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [1, 1],
@@ -252,7 +252,7 @@ describe('findPotentialCollisions', () => {
 
   it('should handle self-intersecting lines', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 0],
           [2, 2],
@@ -261,7 +261,7 @@ describe('findPotentialCollisions', () => {
         ],
         {id: 'self_intersecting'},
       ),
-      turf.lineString(
+      lineString(
         [
           [3, 0],
           [4, 1],
@@ -277,7 +277,7 @@ describe('findPotentialCollisions', () => {
 
   it('should handle realistic road network scenario', () => {
     const lineStrings = [
-      turf.lineString(
+      lineString(
         [
           [0, 5],
           [10, 5],
@@ -285,14 +285,14 @@ describe('findPotentialCollisions', () => {
         {id: 'main_street'},
       ),
 
-      turf.lineString(
+      lineString(
         [
           [3, 5],
           [3, 8],
         ],
         {id: 'north_side_street'},
       ),
-      turf.lineString(
+      lineString(
         [
           [7, 5],
           [7, 2],
@@ -300,7 +300,7 @@ describe('findPotentialCollisions', () => {
         {id: 'south_side_street'},
       ),
 
-      turf.lineString(
+      lineString(
         [
           [5, 3],
           [5, 7],
