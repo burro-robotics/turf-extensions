@@ -3,7 +3,7 @@ import {FeatureCollection, Point} from 'geojson';
 import {isLineStringFeature} from '../feature/is-line-string-feature';
 import {lineIntersectingPoints} from '../line/line-intersecting-points';
 
-export function findLineIntersectionPointsIn(
+export function lineIntersectingPointsIn(
   inFeatureCollection: FeatureCollection,
   options?: {
     includeSharedEndpoints: boolean;
