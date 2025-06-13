@@ -1,14 +1,15 @@
 import {featureCollection} from '@turf/turf';
 import {FeatureCollection, Point} from 'geojson';
 import {isLineStringFeature} from '../feature/is-line-string-feature';
-import {lineIntersectingPoints} from '../line/line-intersecting-points';
+import {lineIntersectFilteringEndpoints} from '../line/line-intersect-filtering-endpoints';
 
-export function lineIntersectingPointsIn(
+export function lineIntersectsFilteringEndpointsIn(
   inFeatureCollection: FeatureCollection,
   options?: {
-    includeSharedEndpoints: boolean;
+    removeDuplicates?: boolean;
+    ignoreSelfIntersections?: boolean;
   },
-): FeatureCollection<Point> {
+): FeatureCollection<Point> | undefined {
   const result: FeatureCollection<Point> = featureCollection([]);
 
   for (const [index1, feature1] of inFeatureCollection.features.entries()) {
@@ -21,13 +22,15 @@ export function lineIntersectingPointsIn(
       }
       if (index2 <= index1) continue;
 
-      const aLineIntersectionPoints = lineIntersectingPoints(
-        feature1,
-        feature2,
-        options,
+      result.features.push(
+        ...(lineIntersectFilteringEndpoints(feature1, feature2, options)
+          ?.features ?? []),
       );
-      result.features.push(...(aLineIntersectionPoints?.features ?? []));
     }
+  }
+
+  if (result.features.length === 0) {
+    return undefined;
   }
 
   return result;
