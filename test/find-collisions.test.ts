@@ -1,10 +1,10 @@
-import {findCollisions} from '../src/feature-collection/find-collisions';
+import {findLineIntersectionPointsIn} from '../src/feature-collection/find-line-intersecting-points-in';
 
-import {lineString} from '@turf/turf';
+import {featureCollection, lineString} from '@turf/turf';
 
 describe('findCollisions without defining a includeSharedEndpoint option', () => {
   it('should detect interior crossings as collisions', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -19,16 +19,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'line2'},
       ),
-    ];
-    const collisions = findCollisions(lineStrings);
+    ]);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(1);
-    expect(collisions[0].features).toHaveLength(1);
-    expect(collisions[0].features[0].geometry.coordinates).toEqual([1, 1]);
+    expect(collisions.features).toHaveLength(1);
+    expect(collisions.features[0].geometry.coordinates).toEqual([1, 1]);
   });
 
   it('should detect T-junctions as collisions', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 1],
@@ -43,17 +42,16 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'side_road'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(1);
-    expect(collisions[0].features).toHaveLength(1);
-    expect(collisions[0].features[0].geometry.coordinates).toEqual([1.5, 1]);
+    expect(collisions.features).toHaveLength(1);
+    expect(collisions.features[0].geometry.coordinates).toEqual([1.5, 1]);
   });
 
   it('should NOT detect shared endpoints as collisions', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -68,15 +66,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'segment2'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(0);
+    expect(collisions.features).toHaveLength(0);
   });
 
   it('should NOT detect multiple shared endpoints as collisions', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -105,15 +103,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'left'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(0);
+    expect(collisions.features).toHaveLength(0);
   });
 
   it('should detect only actual collisions in mixed scenarios', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -135,17 +133,16 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'crossing'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(1);
-    expect(collisions[0].features).toHaveLength(1);
-    expect(collisions[0].features[0].geometry.coordinates).toEqual([0.5, 0]);
+    expect(collisions.features).toHaveLength(1);
+    expect(collisions.features[0].geometry.coordinates).toEqual([0.5, 0]);
   });
 
   it('should return empty array when no intersections exist', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -167,15 +164,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'line3'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(0);
+    expect(collisions.features).toHaveLength(0);
   });
 
   it('should detect multiple collision points', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [1, 0],
@@ -197,22 +194,19 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'horizontal2'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(2);
+    expect(collisions.features).toHaveLength(2);
 
-    expect(collisions[0].features).toHaveLength(1);
-    const coords = collisions.flatMap(c =>
-      c.features.map(f => f.geometry.coordinates),
-    );
+    const coords = collisions.features.map(c => c.geometry.coordinates);
     expect(coords).toContainEqual([1, 1]);
     expect(coords).toContainEqual([1, 2]);
   });
 
   it('should detect when different endpoints meet as non-collision', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -227,15 +221,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'line2'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(0);
+    expect(collisions.features).toHaveLength(0);
   });
 
   it('should handle single line without collisions', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -243,15 +237,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'single'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(0);
+    expect(collisions.features).toHaveLength(0);
   });
 
   it('should handle self-intersecting lines', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 0],
@@ -268,15 +262,15 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'separate'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions.length).toBeGreaterThanOrEqual(1);
+    expect(collisions.features.length).toBeGreaterThanOrEqual(1);
   });
 
   it('should handle realistic road network scenario', () => {
-    const lineStrings = [
+    const lineStrings = featureCollection([
       lineString(
         [
           [0, 5],
@@ -307,11 +301,11 @@ describe('findCollisions without defining a includeSharedEndpoint option', () =>
         ],
         {id: 'bridge'},
       ),
-    ];
+    ]);
 
-    const collisions = findCollisions(lineStrings);
+    const collisions = findLineIntersectionPointsIn(lineStrings);
 
-    expect(collisions).toHaveLength(3);
+    expect(collisions.features).toHaveLength(3);
   });
 });
 
@@ -326,13 +320,15 @@ describe('findCollisions with includeSharedEndpoints: true', () => {
       [1, -1],
     ]);
 
-    const result = findCollisions([line1, line2], {
-      includeSharedEndpoints: true,
-    });
+    const result = findLineIntersectionPointsIn(
+      featureCollection([line1, line2]),
+      {
+        includeSharedEndpoints: true,
+      },
+    );
 
-    expect(result).toHaveLength(1);
-    expect(result[0].features).toHaveLength(1);
-    expect(result[0].features[0].geometry.coordinates).toEqual([0, 0]);
+    expect(result.features).toHaveLength(1);
+    expect(result.features[0].geometry.coordinates).toEqual([0, 0]);
   });
 
   test('should include collisions when lines share end points', () => {
@@ -345,13 +341,15 @@ describe('findCollisions with includeSharedEndpoints: true', () => {
       [2, 2],
     ]);
 
-    const result = findCollisions([line1, line2], {
-      includeSharedEndpoints: true,
-    });
+    const result = findLineIntersectionPointsIn(
+      featureCollection([line1, line2]),
+      {
+        includeSharedEndpoints: true,
+      },
+    );
 
-    expect(result).toHaveLength(1);
-    expect(result[0].features).toHaveLength(1);
-    expect(result[0].features[0].geometry.coordinates).toEqual([2, 2]);
+    expect(result.features).toHaveLength(1);
+    expect(result.features[0].geometry.coordinates).toEqual([2, 2]);
   });
 
   test('should handle T-junction where line endpoint touches middle of another line', () => {
@@ -364,12 +362,15 @@ describe('findCollisions with includeSharedEndpoints: true', () => {
       [1, 1],
     ]);
 
-    const result = findCollisions([line1, line2], {
-      includeSharedEndpoints: true,
-    });
+    const result = findLineIntersectionPointsIn(
+      featureCollection([line1, line2]),
+      {
+        includeSharedEndpoints: true,
+      },
+    );
 
-    expect(result).toHaveLength(1);
-    expect(result[0].features[0].geometry.coordinates).toEqual([1, 0]);
+    expect(result.features).toHaveLength(1);
+    expect(result.features[0].geometry.coordinates).toEqual([1, 0]);
   });
 
   test('should not include shared endpoints when includeSharedEndpoints is false', () => {
@@ -382,11 +383,14 @@ describe('findCollisions with includeSharedEndpoints: true', () => {
       [1, -1],
     ]);
 
-    const result = findCollisions([line1, line2], {
-      includeSharedEndpoints: false,
-    });
+    const result = findLineIntersectionPointsIn(
+      featureCollection([line1, line2]),
+      {
+        includeSharedEndpoints: false,
+      },
+    );
 
-    expect(result).toHaveLength(0);
+    expect(result.features).toHaveLength(0);
   });
 
   test('should handle complex polygon-like structure with shared endpoints', () => {
@@ -403,13 +407,16 @@ describe('findCollisions with includeSharedEndpoints: true', () => {
       [0, 0],
     ]);
 
-    const result = findCollisions([line1, line2, line3], {
-      includeSharedEndpoints: true,
-    });
+    const result = findLineIntersectionPointsIn(
+      featureCollection([line1, line2, line3]),
+      {
+        includeSharedEndpoints: true,
+      },
+    );
 
-    expect(result).toHaveLength(3);
-    const intersectionCoords = result.map(
-      fc => fc.features[0].geometry.coordinates,
+    expect(result.features).toHaveLength(3);
+    const intersectionCoords = result.features.map(
+      fc => fc.geometry.coordinates,
     );
     expect(intersectionCoords).toContainEqual([1, 0]);
     expect(intersectionCoords).toContainEqual([0.5, 1]);
