@@ -121,3 +121,31 @@ export function lineSmoothingLine(params: {
 
   return smoothedLine;
 }
+
+/**
+ * This function calculates the optimal minimum radius for line smoothing based on
+ * coordinates received. The idea is to calculate the distance between each line of the
+ * coordinate in order to get the optimial minimun radius for safe line smoothing.
+ * @param coordinates
+ * @returns the minumin radius to be considered when line smoothing
+ */
+export function getOptimalMinimumRadius(coordinates: Position[]): number {
+  if (coordinates.length < 2) {
+    return 0.1;
+  }
+
+  const segmentLengths: number[] = [];
+  for (const [i, coord] of coordinates.entries()) {
+    if (i === coordinates.length - 1) continue;
+    const segmentLength = distance(coord, coordinates[i + 1], {
+      units: 'meters',
+    });
+    segmentLengths.push(segmentLength);
+  }
+
+  // This 0.5 value should be considered as the safest value.
+  // Lower values tend to not smooth anything.
+  // Higher values tend to break the smooth operation.
+  // Might be necessary to have some sort of slider or input so user can change this.
+  return Math.min(...segmentLengths) * 0.5;
+}
