@@ -1,4 +1,4 @@
-import {featureCollection, lineString} from '@turf/turf';
+import {lineString} from '@turf/turf';
 import type {Position} from 'geojson';
 import {lineSmoothingLine} from '../src/line/line-smoothing-line';
 
@@ -86,19 +86,17 @@ describe('getNewLineSmoothingLine', () => {
 
     const smoothedLine = coordinates;
 
-    const stanceDistance = 1.0;
+    const stanceDistance = 0.5;
     const minimumRadius = 1.5;
 
-    const smoothedLineString = lineString(
-      lineSmoothingLine({
-        coordinates: smoothedLine,
-        stanceDistance,
-        minimumRadius,
-        withOptions: {units: 'meters'},
-      }),
-    );
+    const line = lineSmoothingLine({
+      coordinates: smoothedLine,
+      stanceDistance,
+      minimumRadius,
+      withOptions: {units: 'meters'},
+    });
 
-    console.log(JSON.stringify(featureCollection([smoothedLineString])));
+    const smoothedLineString = lineString(line);
 
     expect(smoothedLineString).toBeDefined();
   });

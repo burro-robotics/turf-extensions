@@ -15,7 +15,7 @@ export function lineSmoothingLine(params: {
 }): Position[] {
   const {coordinates, stanceDistance, withOptions, minimumRadius} = params;
 
-  if (coordinates.length === 1) {
+  if (coordinates.length <= 2) {
     return coordinates;
   }
 
@@ -62,7 +62,7 @@ export function lineSmoothingLine(params: {
   }
 
   if (!foundIndexBehind) {
-    return [];
+    indexBehind = indexOfFirstInsufficientRadius - 1;
   }
 
   const coordinateBehind = subdividedCoordinates[indexBehind];
@@ -92,7 +92,11 @@ export function lineSmoothingLine(params: {
   }
 
   if (!foundIndexAhead) {
-    return [];
+    if (indexOfFirstInsufficientRadius + 1 < subdividedCoordinates.length) {
+      indexAhead = indexOfFirstInsufficientRadius + 1;
+    } else {
+      return [];
+    }
   }
 
   const coordinateAhead = subdividedCoordinates[indexAhead];
