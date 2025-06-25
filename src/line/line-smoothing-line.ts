@@ -15,6 +15,10 @@ export function lineSmoothingLine(params: {
 }): Position[] {
   const {coordinates, stanceDistance, withOptions, minimumRadius} = params;
 
+  if (coordinates.length === 1) {
+    return coordinates;
+  }
+
   const subdividedCoordinates = coordinatesSubdividing({
     coordinates,
     byMaximumDistance: stanceDistance,
@@ -108,15 +112,21 @@ export function lineSmoothingLine(params: {
     stepCount,
   });
 
+  const smoothenedPositions: Position[] = bezierSmoothedLine.slice(
+    1,
+    bezierSmoothedLine.length - 1,
+  );
+  const smoothedAhead = lineSmoothingLine({
+    coordinates: coordinatesAhead,
+    stanceDistance,
+    minimumRadius,
+    withOptions,
+  });
+
   const smoothedLine = [
     ...coordinatesBehind,
-    ...bezierSmoothedLine.slice(1, bezierSmoothedLine.length - 1),
-    ...lineSmoothingLine({
-      coordinates: coordinatesAhead,
-      stanceDistance,
-      minimumRadius,
-      withOptions,
-    }),
+    ...smoothenedPositions,
+    ...smoothedAhead,
   ];
 
   return smoothedLine;

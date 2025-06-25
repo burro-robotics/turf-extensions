@@ -1,9 +1,9 @@
-import {lineString} from '@turf/turf';
+import {featureCollection, lineString} from '@turf/turf';
 import type {Position} from 'geojson';
 import {lineSmoothingLine} from '../src/line/line-smoothing-line';
 
 describe('getNewLineSmoothingLine', () => {
-  it('should remove adjacent identical points', () => {
+  it('should return something', () => {
     const destinationMap = {
       type: 'FeatureCollection',
       properties: {
@@ -50,6 +50,55 @@ describe('getNewLineSmoothingLine', () => {
         withOptions: {units: 'meters'},
       }),
     );
+
+    expect(smoothedLineString).toBeDefined();
+  });
+
+  it('should handle tricky cases', () => {
+    const destinationMap = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          id: 'a1e3ce6d-4cd1-4dce-91a8-e3b4bb115a87',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [-75.553372123, 40.105225386],
+              [-75.55337376, 40.105221809],
+              [-75.553371874, 40.105215206],
+              [-75.55336785, 40.105211777],
+              [-75.553360599, 40.1052112],
+              [-75.553352516, 40.105218121],
+            ],
+          },
+          properties: {
+            direction: 'two_way',
+            speed_limit: 0,
+            enabled: true,
+          },
+        },
+      ],
+    };
+
+    const coordinates = destinationMap.features![0].geometry
+      .coordinates as Position[];
+
+    const smoothedLine = coordinates;
+
+    const stanceDistance = 1.0;
+    const minimumRadius = 1.5;
+
+    const smoothedLineString = lineString(
+      lineSmoothingLine({
+        coordinates: smoothedLine,
+        stanceDistance,
+        minimumRadius,
+        withOptions: {units: 'meters'},
+      }),
+    );
+
+    console.log(JSON.stringify(featureCollection([smoothedLineString])));
 
     expect(smoothedLineString).toBeDefined();
   });
