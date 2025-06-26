@@ -1,108 +1,121 @@
-import {featureCollection, lineString} from '@turf/turf';
-import {Feature, FeatureCollection, LineString, Position} from 'geojson';
-import {coordinatesReversing} from '../coordinates/coordinates-reversing';
+import {Feature, FeatureCollection, LineString} from 'geojson';
 import {coordinatesToString} from '../coordinates/coordinates-to-string';
 import {isLineStringFeature} from '../feature/is-line-string-feature';
 
 export function mergeExtendedLineStrings({
   inFeatureCollection,
+  options = {
+    allowMergingAtIntersections: true,
+  },
 }: {
   inFeatureCollection: FeatureCollection;
+  options?: {
+    allowMergingAtIntersections?: boolean;
+  };
 }): FeatureCollection {
-  const endpointMap = new Map<string, Feature<LineString>[]>();
+  const {allowMergingAtIntersections = false} = options;
 
-  // Step 1: Index endpoints
-  for (const feature of inFeatureCollection.features) {
-    if (!isLineStringFeature(feature)) continue;
+  // Count how many lines connect to each endpoint
+  const endpointCount = new Map<string, number>();
+  const endpointToFeatures = new Map<string, Feature<LineString>[]>();
+
+  for (const feature of inFeatureCollection.features.filter(
+    isLineStringFeature,
+  )) {
     const coords = feature.geometry.coordinates;
-    const startKey = coordinatesToString(coords[0]);
-    const endKey = coordinatesToString(coords[coords.length - 1]);
+    const start = coordinatesToString(coords[0]);
+    const end = coordinatesToString(coords[coords.length - 1]);
 
-    for (const key of [startKey, endKey]) {
-      if (!endpointMap.has(key)) {
-        endpointMap.set(key, []);
+    for (const point of [start, end]) {
+      endpointCount.set(point, (endpointCount.get(point) || 0) + 1);
+      if (!endpointToFeatures.has(point)) {
+        endpointToFeatures.set(point, []);
       }
-      endpointMap.get(key)!.push(feature);
+      endpointToFeatures.get(point)!.push(feature);
     }
   }
 
   const visited = new Set<Feature<LineString>>();
   const mergedLines: Feature<LineString>[] = [];
 
-  // Step 2: Walk and merge combinable chains
-  for (const feature of inFeatureCollection.features) {
-    if (!isLineStringFeature(feature) || visited.has(feature)) continue;
+  for (const feature of inFeatureCollection.features.filter(
+    isLineStringFeature,
+  )) {
+    if (visited.has(feature)) continue;
 
     let coords = [...feature.geometry.coordinates];
     visited.add(feature);
 
-    const mergedProperties = {...feature.properties};
-
     let extended = true;
+
+    // Extend forward
     while (extended) {
-      extended = false;
+      const end = coordinatesToString(coords[coords.length - 1]);
+      const connected = endpointToFeatures.get(end) || [];
 
-      const startKey = coordinatesToString(coords[0]);
-      const endKey = coordinatesToString(coords[coords.length - 1]);
-
-      for (const [key, isStart] of [
-        [startKey, true],
-        [endKey, false],
-      ] as const) {
-        const connected = endpointMap.get(key);
-        if (!connected || connected.length !== 2) continue;
-
-        const other = connected.find(f => !visited.has(f));
-        if (!other) continue;
-
-        const otherCoords = other.geometry.coordinates;
-        const otherStartKey = coordinatesToString(otherCoords[0]);
-        const otherEndKey = coordinatesToString(
-          otherCoords[otherCoords.length - 1],
-        );
-
-        let newCoords: Position[];
-        if (key === otherStartKey) {
-          newCoords = coordinatesReversing(otherCoords);
-        } else if (key === otherEndKey) {
-          newCoords = otherCoords;
-        } else {
+      if (
+        (allowMergingAtIntersections && connected.length >= 2) ||
+        (!allowMergingAtIntersections && connected.length === 2)
+      ) {
+        const next = connected.find(f => !visited.has(f));
+        if (next) {
+          const nextCoords = next.geometry.coordinates;
+          if (coordinatesToString(nextCoords[0]) === end) {
+            coords = coords.concat(nextCoords.slice(1));
+          } else {
+            coords = coords.concat(nextCoords.slice(0, -1).reverse());
+          }
+          visited.add(next);
           continue;
         }
-
-        if (isStart) {
-          coords = [...newCoords.slice(0, -1), ...coords];
-        } else {
-          coords = [...coords, ...newCoords.slice(1)];
-        }
-
-        visited.add(other);
-        extended = true;
-        break;
       }
+
+      extended = false;
     }
 
-    mergedLines.push(
-      lineString(coords, mergedProperties, {
-        id: feature.id,
-      }),
-    );
-  }
+    // Extend backward
+    extended = true;
+    while (extended) {
+      const start = coordinatesToString(coords[0]);
+      const connected = endpointToFeatures.get(start) || [];
 
-  // Step 3: Reconstruct final FeatureCollection
-  const outputFeatures: Feature[] = [];
-
-  for (const feature of inFeatureCollection.features) {
-    if (!isLineStringFeature(feature)) {
-      // Keep non-LineString features
-      outputFeatures.push(feature);
-    } else if (!visited.has(feature)) {
-      // Keep untouched LineStrings
-      outputFeatures.push(feature);
+      if (
+        (allowMergingAtIntersections && connected.length >= 2) ||
+        (!allowMergingAtIntersections && connected.length === 2)
+      ) {
+        const prev = connected.find(f => !visited.has(f));
+        if (prev) {
+          const prevCoords = prev.geometry.coordinates;
+          if (
+            coordinatesToString(prevCoords[prevCoords.length - 1]) === start
+          ) {
+            coords = prevCoords.slice(0, -1).concat(coords);
+          } else {
+            coords = prevCoords.slice(1).reverse().concat(coords);
+          }
+          visited.add(prev);
+          continue;
+        }
+      }
+      extended = false;
     }
+
+    mergedLines.push({
+      ...feature,
+      geometry: {
+        type: 'LineString',
+        coordinates: coords,
+      },
+    });
   }
 
-  outputFeatures.push(...mergedLines);
-
-  return featureCollection(outputFeatures);
+  return {
+    type: 'FeatureCollection',
+    features: [
+      ...mergedLines,
+      ...inFeatureCollection.features.filter(
+        value => !isLineStringFeature(value),
+      ),
+    ],
+  };
 }
