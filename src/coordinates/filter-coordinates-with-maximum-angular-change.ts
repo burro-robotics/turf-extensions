@@ -1,5 +1,4 @@
 import type {Position} from 'geojson';
-
 import {coordinatesCalculatedAngularChanges} from './coordinates-calculated-angular-changes';
 
 export function filterCoordinatesWithMaximumAngularChange({

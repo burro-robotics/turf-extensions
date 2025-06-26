@@ -206,7 +206,6 @@ describe('merge-extended-line-strings', () => {
         allowMergingAtIntersections: false,
       },
     });
-    console.log(JSON.stringify(merged));
     expect(merged.features.length).toBe(5);
   });
 
@@ -289,7 +288,150 @@ describe('merge-extended-line-strings', () => {
         allowMergingAtIntersections: false,
       },
     });
-    console.log(JSON.stringify(merged, null, 2));
     expect(merged.features.length).toBe(1);
+  });
+
+  it('should not merge extended line strings with points on them', () => {
+    const geojsonString = `
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "coordinates": [
+          0,
+          2
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "type": "LineString"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "type": "LineString"
+      }
+    }
+  ]
+}
+`;
+
+    const aFeatureCollection = JSON.parse(geojsonString);
+    const merged = mergeExtendedLineStrings({
+      inFeatureCollection: aFeatureCollection,
+      options: {
+        allowMergingAtIntersections: false,
+      },
+    });
+    expect(merged.features.length).toBe(3);
+  });
+
+  it('should not merge extended line strings with points on them', () => {
+    const geojsonString = `
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "coordinates": [
+          0,
+          2
+        ],
+        "type": "Point"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#0000ff",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "type": "LineString"
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "stroke": "#ff0000",
+        "stroke-width": 2,
+        "stroke-opacity": 1
+      },
+      "geometry": {
+        "coordinates": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "type": "LineString"
+      }
+    }
+  ]
+}
+`;
+
+    const aFeatureCollection = JSON.parse(geojsonString);
+    const merged = mergeExtendedLineStrings({
+      inFeatureCollection: aFeatureCollection,
+      options: {
+        allowMergingAtIntersections: true,
+      },
+    });
+    expect(merged.features.length).toBe(2);
   });
 });

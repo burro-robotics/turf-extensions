@@ -1,5 +1,5 @@
 import {Position} from 'geojson';
-import {coordinatesEqual} from './cordinates-equal';
+import {coordinatesEqual} from './coordinates-equal';
 
 export function coordinatesEveryEqual({
   coordinates,
