@@ -82,7 +82,11 @@ export function mergeExtendedLineStrings({
       }
     }
 
-    mergedLines.push(lineString(coords, mergedProperties));
+    mergedLines.push(
+      lineString(coords, mergedProperties, {
+        id: feature.id,
+      }),
+    );
   }
 
   // Step 3: Reconstruct final FeatureCollection
