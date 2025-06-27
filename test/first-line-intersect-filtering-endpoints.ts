@@ -1,5 +1,5 @@
 import {featureCollection, lineString} from '@turf/turf';
-import {firstLineIntersectFilteringEndpoints} from '../src/feature-collection/boolean-has-line-intersect-filtering-endpoints';
+import {firstLineIntersectFilteringEndpoints} from '../src/feature-collection/first-line-intersect-filtering-endpoints';
 
 describe('firstLineIntersectFilteringEndpoints', () => {
   it('should return the first interior intersection point in a self-intersecting LineString', () => {
