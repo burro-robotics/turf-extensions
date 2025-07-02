@@ -7,3 +7,4 @@ export * from './coordinates-inserting-point-after-nearest-point-on-line';
 export * from './coordinates-subdividing';
 export * from './coordinates-to-string';
 export * from './filter-coordinates-with-maximum-angular-change';
+export * from './first-coordinate-over-maximum-angular-change';
