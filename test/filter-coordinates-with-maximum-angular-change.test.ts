@@ -1,7 +1,7 @@
 import type {Position} from 'geojson';
 import {filterCoordinatesWithMaximumAngularChange} from '../src/coordinates/filter-coordinates-with-maximum-angular-change';
 
-describe('getNewLineSmoothingLine', () => {
+describe('filterCoordinatesWithMaximumAngularChange', () => {
   it('should remove adjacent identical points', () => {
     const destinationMap = {
       type: 'FeatureCollection',

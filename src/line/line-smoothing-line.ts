@@ -1,5 +1,5 @@
-import {cleanCoords, distance, Units} from '@turf/turf';
-import type {Position} from 'geojson';
+import {cleanCoords, distance, lineString, Units} from '@turf/turf';
+import type {Feature, LineString, Position} from 'geojson';
 import {coordinatesCalculatedRadii} from '../coordinates/coordinate-calculated-radii';
 import {coordinatesSubdividing} from '../coordinates/coordinates-subdividing';
 import {lineBezierSmoothing} from '../line/line-bezier-smoothing';
@@ -136,5 +136,9 @@ export function lineSmoothingLine({
     ...smoothedAhead,
   ];
 
-  return cleanCoords(smoothedLine);
+  const aLineString: Feature<LineString> = cleanCoords(
+    lineString(smoothedLine),
+  );
+
+  return aLineString.geometry.coordinates;
 }
