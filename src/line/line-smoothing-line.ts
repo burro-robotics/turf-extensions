@@ -1,11 +1,16 @@
-import {distance, Units} from '@turf/turf';
+import {cleanCoords, distance, Units} from '@turf/turf';
 import type {Position} from 'geojson';
 import {coordinatesCalculatedRadii} from '../coordinates/coordinate-calculated-radii';
 import {coordinatesSubdividing} from '../coordinates/coordinates-subdividing';
 import {lineBezierSmoothing} from '../line/line-bezier-smoothing';
 import {linesSplittingLineAtCoordinate} from './line-splitting-line-at-coordinate';
 
-export function lineSmoothingLine(params: {
+export function lineSmoothingLine({
+  coordinates,
+  stanceDistance,
+  withOptions,
+  minimumRadius,
+}: {
   coordinates: Position[];
   stanceDistance: number;
   minimumRadius: number;
@@ -13,8 +18,6 @@ export function lineSmoothingLine(params: {
     units?: Units;
   };
 }): Position[] {
-  const {coordinates, stanceDistance, withOptions, minimumRadius} = params;
-
   if (coordinates.length <= 2) {
     return coordinates;
   }
@@ -133,5 +136,5 @@ export function lineSmoothingLine(params: {
     ...smoothedAhead,
   ];
 
-  return smoothedLine;
+  return cleanCoords(smoothedLine);
 }
